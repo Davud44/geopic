@@ -3,5 +3,5 @@ import 'package:geopic/common/errors/failure.dart';
 import 'package:geopic/domain/entities/openai_response.dart';
 
 abstract class ProbabilityRepository {
-  Future<Either<Failure, List<OpenAiResponse>>> getProbabilities();
+  Future<Either<Failure, OpenAiResponse>> getProbabilities(String prompt);
 }
