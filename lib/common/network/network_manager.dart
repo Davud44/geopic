@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../constants/constants.dart';
 import '../errors/exceptions.dart';
@@ -20,8 +21,8 @@ class NetworkManager {
       "Content-Type": "application/json",
     }
     ..interceptors.add(InterceptorsWrapper(onRequest: (options, handler) async {
-      options.headers.putIfAbsent("Authorization",
-          () => "Bearer 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");
+      String token = dotenv.env['TOKEN'] ?? '';
+      options.headers.putIfAbsent("Authorization", () => "Bearer $token");
       return handler.next(options);
     }, onResponse: (response, handler) {
       return handler.next(response);

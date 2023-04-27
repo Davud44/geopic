@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:geopic/domain/entities/openai_response.dart';
 
 abstract class SelectImageState extends Equatable {}
 
@@ -9,9 +8,9 @@ class SelectImageInitial extends SelectImageState {
 }
 
 class SelectImageSuccessState extends SelectImageState {
-  final OpenAiResponse response;
+  final List<String> result;
 
-  SelectImageSuccessState({required this.response});
+  SelectImageSuccessState({required this.result});
 
   @override
   List<Object?> get props => [];

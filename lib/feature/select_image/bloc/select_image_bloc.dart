@@ -20,7 +20,13 @@ class SelectImageBloc extends Bloc<SelectImageEvent, SelectImageState> {
     Either<Failure, OpenAiResponse> response =
         await _getProbabilityUseCase.call(event.prompt);
     response.fold((l) => null, (OpenAiResponse openAiResponse) {
-      emit(SelectImageSuccessState(response: openAiResponse));
+      String output = openAiResponse.choices[0].text
+          .replaceAll('\n', '')
+          .replaceAll('[', '')
+          .replaceAll(']', '');
+      List<String> result =
+          output.split(',').map((e) => e.trim().toString()).toList();
+      emit(SelectImageSuccessState(result: result));
     });
   }
 }

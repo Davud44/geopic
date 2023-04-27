@@ -24,6 +24,8 @@ class _SelectImageScreenState extends State<SelectImageScreen> {
       GetIt.instance.get<SelectImageBloc>();
   final ImagePicker _imagePicker = ImagePicker();
   late ObjectDetector _objectDetector;
+  final ValueNotifier<List<String>> _probabilitiesNotifier =
+      ValueNotifier(List.empty());
 
   @override
   void initState() {
@@ -80,7 +82,7 @@ class _SelectImageScreenState extends State<SelectImageScreen> {
     }
 
     String prompt =
-        'I will give a list of items which is near to me. Give me a list of locations which can i be at there. Items: ${items.toString()}. Return output like [place1, place2]';
+        'I will give a list of items which is near to me. Give me a list of locations which can i be at there. Items: [${items.toString()}]. Return output like [place1, place2]';
     _selectImageBloc.add(SendDetectPlaceRequest(prompt: prompt));
   }
 
@@ -89,19 +91,42 @@ class _SelectImageScreenState extends State<SelectImageScreen> {
     return BlocProvider(
       create: (context) => _selectImageBloc,
       child: Scaffold(
-        body: SafeArea(child: BlocBuilder<SelectImageBloc, SelectImageState>(
-            builder: (context, state) {
-          return Column(
-            children: [
-              ElevatedButton(
-                  onPressed: () {
-                    _selectImage();
-                  },
-                  child: const Text('select image')),
-              // if(state is SelectImageSuccessState){
-              //   return
-              // }
-            ],
+        body: SafeArea(
+            child: BlocConsumer<SelectImageBloc, SelectImageState>(
+                listener: (context, state) {
+          if (state is SelectImageSuccessState) {
+            _probabilitiesNotifier.value = state.result;
+            print(state.result);
+          }
+        }, builder: (context, state) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      _selectImage();
+                    },
+                    child: const Text('select image')),
+                Expanded(
+                  child: ValueListenableBuilder(
+                      valueListenable: _probabilitiesNotifier,
+                      builder: (context, value, child) {
+                        return ListView.builder(
+                            itemCount: value.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 5),
+                                  child: Text(value[index]));
+                            });
+                      }),
+                )
+              ],
+            ),
           );
         })),
       ),
