@@ -96,9 +96,12 @@ class _SelectImageScreenState extends State<SelectImageScreen> {
                 listener: (context, state) {
           if (state is SelectImageSuccessState) {
             _probabilitiesNotifier.value = state.result;
-            print(state.result);
           }
         }, builder: (context, state) {
+          if (state is SelectImageLoading) {
+            return const Center(child: CircularProgressIndicator.adaptive());
+          }
+
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(

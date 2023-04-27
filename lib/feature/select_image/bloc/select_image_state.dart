@@ -7,6 +7,11 @@ class SelectImageInitial extends SelectImageState {
   List<Object?> get props => [];
 }
 
+class SelectImageLoading extends SelectImageState {
+  @override
+  List<Object?> get props => [];
+}
+
 class SelectImageSuccessState extends SelectImageState {
   final List<String> result;
 

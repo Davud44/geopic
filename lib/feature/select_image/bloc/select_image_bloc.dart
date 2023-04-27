@@ -17,6 +17,7 @@ class SelectImageBloc extends Bloc<SelectImageEvent, SelectImageState> {
   }
 
   _getProbabilities(SendDetectPlaceRequest event, emit) async {
+    emit(SelectImageLoading());
     Either<Failure, OpenAiResponse> response =
         await _getProbabilityUseCase.call(event.prompt);
     response.fold((l) => null, (OpenAiResponse openAiResponse) {
